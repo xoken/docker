@@ -8,6 +8,7 @@ RUN pacman -S --noconfirm stack
 RUN pacman -S --noconfirm --needed base-devel
 RUN pacman -S --noconfirm leveldb
 RUN pacman -S --noconfirm libsecp256k1
+RUN pacman -S --noconfirm jemalloc
 # Stack upgrade
 RUN stack upgrade
 # Set the working directory.
