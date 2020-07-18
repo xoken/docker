@@ -19,4 +19,5 @@ RUN git clone https://github.com/xoken/arivi-core.git
 # Set the working directory.
 WORKDIR /opt/work/xoken-node
 # Trial build
-RUN stack install  
+RUN env LD_PRELOAD=/usr/lib/libjemalloc.so.2 stack install
+
