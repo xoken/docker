@@ -20,6 +20,7 @@ WORKDIR /opt/work/
 RUN git clone https://github.com/xoken/xoken-node.git
 RUN git clone https://github.com/xoken/xoken-core.git
 RUN git clone https://github.com/xoken/arivi-core.git
+RUN git clone https://github.com/xoken/xcql.git
 # Set the working directory.
 WORKDIR /opt/work/xoken-node
 # Trial build
