@@ -19,7 +19,7 @@ cd /opt
 #
 #
 echo "Downloading and extracting cassandra-3.11.6"
-#wget -c https://archive.apache.org/dist/cassandra/3.11.6/apache-cassandra-3.11.6-bin.tar.gz
+wget -c https://archive.apache.org/dist/cassandra/3.11.6/apache-cassandra-3.11.6-bin.tar.gz
 tar -xvzf apache-cassandra-3.11.6-bin.tar.gz
 ################################################
 #
@@ -78,7 +78,7 @@ gnome-terminal --title=newWindow -- bash -c "/opt/apache-cassandra-3.11.6/bin/ca
 #
 #
 echo "Downloading and extracting neo4j-community-3.5.20"
-#wget -c "https://neo4j.com/artifact.php?name=neo4j-community-3.5.20-unix.tar.gz" -O "neo4j-community-3.5.20-unix.tar.gz"
+wget -c "https://neo4j.com/artifact.php?name=neo4j-community-3.5.20-unix.tar.gz" -O "neo4j-community-3.5.20-unix.tar.gz"
 tar -xvzf neo4j-community-3.5.20-unix.tar.gz
 ##################################################
 #
@@ -141,10 +141,10 @@ grep -q "^DISTRIB\_RELEASE\=20\.04" osversion.txt
 if [ $? -eq 0 ]
 then
 nexa=xoken-nexa_release-1.1.2_ubuntu2004.zip
-#wget -c https://www.xoken.org/download/xoken-nexa/6185/xoken-nexa_release-1.1.2_ubuntu2004.zip
+wget -c https://www.xoken.org/download/xoken-nexa/6185/xoken-nexa_release-1.1.2_ubuntu2004.zip
 else
 nexa=xoken-nexa_release-1.1.2_ubuntu1804.zip
-#wget -c https://www.xoken.org/download/xoken-nexa/6184/xoken-nexa_release-1.1.2_ubuntu1804.zip
+wget -c https://www.xoken.org/download/xoken-nexa/6184/xoken-nexa_release-1.1.2_ubuntu1804.zip
 fi
 #################################################
 #
