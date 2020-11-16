@@ -5,7 +5,8 @@ if [ $# -ne 1 ]; then
 fi
 neo4jpassword=$1
 sudo apt-get update -y
-sudo apt-get install openjdk-8 -y
+sudo apt-get install openjdk-8-jre -y
+sudo apt-get install python2.7 -y
 sudo apt-get install wget -y
 sudo apt-get install tar -y
 sudo apt-get install curl -y
@@ -54,7 +55,7 @@ sudo grep -q '^\*\ \-\ as.*' $limits && sudo sed -i "s/\*\ \-\ memlock.*/* - as 
 #
 echo "Updating sysctl.conf"
 sysctl=/etc/sysctl.conf
-sudo grep -q '^vm\.max\_map\_count.*' $sysctl && sudo sed -i "s/\* \- memlock.*/vm.max_map_count = 1048575 /" $sysctl || sudo echo 'vm.max_map_count = 1048575' >> $sysctl
+sudo grep -q '^vm\.max\_map\_count.*' $sysctl && sudo sed -i "s/\* \- memlock.*/vm.max_map_count = 1048575 /" $sysctl || sudo sh -c "echo 'vm.max_map_count = 1048575' >> $sysctl"
 ##################################################
 #
 #
@@ -69,8 +70,14 @@ echo "export PATH=$PATH:/opt/apache-cassandra-3.11.6/bin" >> ~/.bashrc
 # Starting cassandra in a new terminal window
 #
 #
+! [ -f /opt/apache-cassandra-3.11.6/logs/gc.log ]
+if [ $? -eq 0 ]
+then
+mkdir /opt/apache-cassandra-3.11.6/logs;
+echo >> /opt/apache-cassandra-3.11.6/logs/gc.log;
+fi
 echo "Starting cassandra in a new terminal window"
-gnome-terminal --title=newWindow -- bash -c "/opt/apache-cassandra-3.11.6/bin/cassandra; bash"
+(cd /opt/apache-cassandra-3.11.6/bin ; ./cassandra ) &
 ##################################################
 #
 #
@@ -208,9 +215,16 @@ grep -q '^neo4jPassword.*' $nodeconfig && sed -i "s/neo4jPassword.*/neo4jPasswor
 # Wait until cassandra starts running and run queries present in schema.cql
 #
 #
+counter=0
 while ! cqlsh -e 'describe cluster' ; do
     sleep 3
     echo "Waiting until cassandra starts running"
+    if [[ $counter -eq 30 ]]; then
+    ps -ef | grep cassandra | awk '{print $2}' | xargs -I{} kill {}
+    (cd /opt/apache-cassandra-3.11.6/bin ; ./cassandra ) &
+    counter=0;
+    fi
+counter=$(( counter + 1 ))
 done
 echo "Running queries present in schema.cql"
 cqlsh -f /opt/xoken/schema.cql
@@ -222,10 +236,17 @@ cqlsh -f /opt/xoken/schema.cql
 #
 echo "Restarting cassandra"
 ps -ef | grep cassandra | awk '{print $2}' | xargs -I{} kill {}
-gnome-terminal --title=newWindow -- bash -c "/opt/apache-cassandra-3.11.6/bin/cassandra; bash"
+(cd /opt/apache-cassandra-3.11.6/bin ; ./cassandra ) &
+counter=0
 while ! cqlsh -e 'describe cluster' ; do
     sleep 3
     echo "Waiting until cassandra starts running"
+    if [[ $counter -eq 30 ]]; then
+    ps -ef | grep cassandra | awk '{print $2}' | xargs -I{} kill {}
+    (cd /opt/apache-cassandra-3.11.6/bin ; ./cassandra ) &
+    counter=0;
+    fi
+counter=$(( counter + 1 ))
 done
 echo "Restarting neo4j"
 (cd /opt/neo4j-community-3.5.20/bin ; ./neo4j restart )
