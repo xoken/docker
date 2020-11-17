@@ -82,6 +82,7 @@ echo >> /opt/apache-cassandra-3.11.6/logs/gc.log
 fi
 echo "Starting cassandra"
 cassandra
+sleep 30
 ##################################################
 #
 #
@@ -102,10 +103,7 @@ neo4jconfig=neo4j-community-3.5.20/conf/neo4j.conf
 echo 'dbms.connector.bolt.thread_pool_min_size=20' >> $neo4jconfig
 echo 'dbms.connector.bolt.thread_pool_max_size=2048' >> $neo4jconfig
 echo 'dbms.connector.bolt.thread_pool_keep_alive=5m' >> $neo4jconfig
-#
-# NOTE: uncommenting the below line might cause problems while starting neo4j
-#
-#grep -q '^dbms.connector.default_listen_address.*' $neo4jconfig && sed -i "s/dbms.connector.default_listen_address.*/dbms.connector.default_listen_address=0.0.0.0 /" $neo4jconfig || echo 'dbms.connector.default_listen_address=0.0.0.0' >> $neo4jconfig
+
 ##################################################
 #
 #
@@ -124,6 +122,14 @@ echo $PATH
 #
 echo "Starting neo4j"
 neo4j start
+#################################################
+#
+#
+# Waiting for Neo4j to start
+#
+#
+echo "Waiting for neo4j to start"
+sleep 180
 ##################################################
 #
 #
@@ -168,26 +174,7 @@ fi
 echo "Creating directory 'xoken' under /opt/ and unzipping Xoken Nexa in /opt/xoken"
 mkdir /opt/xoken
 unzip $nexa -d /opt/xoken
-#################################################
-#
-#
-# Waiting for Neo4j to start
-#
-#
 
-neo4j status >> neo4jstatus.txt
-while true ; do
-	grep -q "^Neo4j\ is\ running.*" neo4jstatus.txt
-	if [ $? -eq 0 ]
-	then
-	break
-	else
-	sleep 3
-	echo "waiting for Neo4j to start..."
-	neo4j status >> neo4jstatus.txt
-	fi
-done
-rm neo4jstatus.txt
 #################################################
 #
 #
@@ -243,6 +230,7 @@ cqlsh -f /opt/xoken/schema.cql
 echo "Restarting cassandra"
 ps -ef | grep cassandra | awk '{print $2}' | xargs -I{} kill {}
 cassandra
+sleep 30
 counter=0
 while ! cqlsh -e 'describe cluster' ; do
     sleep 5
@@ -256,8 +244,9 @@ counter=$(( counter + 1 ))
 done
 echo "Restarting neo4j"
 neo4j restart
+sleep 180
 #################################################
-#sudo rm osversion.txt
+
 cd xoken
 #################################################
 #
