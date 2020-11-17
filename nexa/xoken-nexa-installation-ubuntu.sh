@@ -64,20 +64,24 @@ sudo grep -q '^vm\.max\_map\_count.*' $sysctl && sudo sed -i "s/\* \- memlock.*/
 #
 echo "Setting the PATH environment variable for cassandra in your .bashrc file"
 echo "export PATH=$PATH:/opt/apache-cassandra-3.11.6/bin" >> ~/.bashrc
+export PATH=$PATH:/opt/apache-cassandra-3.11.6/bin
+echo $PATH
 ##################################################
 #
 #
-# Starting cassandra in a new terminal window
+# Checking for and Creating gc.log and Starting cassandra
 #
 #
+echo "Checking if gc.log exists"
 ! [ -f /opt/apache-cassandra-3.11.6/logs/gc.log ]
 if [ $? -eq 0 ]
 then
-mkdir /opt/apache-cassandra-3.11.6/logs;
-echo >> /opt/apache-cassandra-3.11.6/logs/gc.log;
+echo "Creating gc.log"
+mkdir /opt/apache-cassandra-3.11.6/logs
+echo >> /opt/apache-cassandra-3.11.6/logs/gc.log
 fi
-echo "Starting cassandra in a new terminal window"
-(cd /opt/apache-cassandra-3.11.6/bin ; ./cassandra ) &
+echo "Starting cassandra"
+cassandra
 ##################################################
 #
 #
@@ -110,6 +114,8 @@ echo 'dbms.connector.bolt.thread_pool_keep_alive=5m' >> $neo4jconfig
 #
 echo "Setting the PATH environment variable for neo4j in your .bashrc file"
 echo "export PATH=$PATH:/opt/apache-cassandra-3.11.6/bin:/opt/neo4j-community-3.5.20/bin" >> ~/.bashrc
+export PATH=$PATH:/opt/apache-cassandra-3.11.6/bin:/opt/neo4j-community-3.5.20/bin
+echo $PATH
 ##################################################
 #
 #
@@ -117,7 +123,7 @@ echo "export PATH=$PATH:/opt/apache-cassandra-3.11.6/bin:/opt/neo4j-community-3.
 #
 #
 echo "Starting neo4j"
-(cd /opt/neo4j-community-3.5.20/bin ; ./neo4j start )
+neo4j start
 ##################################################
 #
 #
@@ -169,7 +175,7 @@ unzip $nexa -d /opt/xoken
 #
 #
 
-(cd /opt/neo4j-community-3.5.20/bin ; ./neo4j status ) >> neo4jstatus.txt
+neo4j status >> neo4jstatus.txt
 while true ; do
 	grep -q "^Neo4j\ is\ running.*" neo4jstatus.txt
 	if [ $? -eq 0 ]
@@ -178,7 +184,7 @@ while true ; do
 	else
 	sleep 3
 	echo "waiting for Neo4j to start..."
-	(cd /opt/neo4j-community-3.5.20/bin ; ./neo4j status ) >> neo4jstatus.txt
+	neo4j status >> neo4jstatus.txt
 	fi
 done
 rm neo4jstatus.txt
@@ -189,7 +195,7 @@ rm neo4jstatus.txt
 #
 #
 echo "Creating new Neo4j password"
-curl -H "Content-Type: application/json" -X POST -d '{"password":"$neo4jpassword"}' -u neo4j:neo4j http://localhost:7474/user/neo4j/password
+curl -H "Content-Type: application/json" -X POST -d '{"password":"'$neo4jpassword'"}' -u neo4j:neo4j http://localhost:7474/user/neo4j/password
 #################################################
 #
 #
@@ -217,11 +223,11 @@ grep -q '^neo4jPassword.*' $nodeconfig && sed -i "s/neo4jPassword.*/neo4jPasswor
 #
 counter=0
 while ! cqlsh -e 'describe cluster' ; do
-    sleep 3
+    sleep 5
     echo "Waiting until cassandra starts running"
-    if [[ $counter -eq 30 ]]; then
+    if [[ $counter -eq 12 ]]; then
     ps -ef | grep cassandra | awk '{print $2}' | xargs -I{} kill {}
-    (cd /opt/apache-cassandra-3.11.6/bin ; ./cassandra ) &
+    cassandra
     counter=0;
     fi
 counter=$(( counter + 1 ))
@@ -236,20 +242,20 @@ cqlsh -f /opt/xoken/schema.cql
 #
 echo "Restarting cassandra"
 ps -ef | grep cassandra | awk '{print $2}' | xargs -I{} kill {}
-(cd /opt/apache-cassandra-3.11.6/bin ; ./cassandra ) &
+cassandra
 counter=0
 while ! cqlsh -e 'describe cluster' ; do
-    sleep 3
+    sleep 5
     echo "Waiting until cassandra starts running"
-    if [[ $counter -eq 30 ]]; then
+    if [[ $counter -eq 12 ]]; then
     ps -ef | grep cassandra | awk '{print $2}' | xargs -I{} kill {}
-    (cd /opt/apache-cassandra-3.11.6/bin ; ./cassandra ) &
+    cassandra
     counter=0;
     fi
 counter=$(( counter + 1 ))
 done
 echo "Restarting neo4j"
-(cd /opt/neo4j-community-3.5.20/bin ; ./neo4j restart )
+neo4j restart
 #################################################
 #sudo rm osversion.txt
 cd xoken
