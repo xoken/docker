@@ -210,10 +210,11 @@ grep -q '^neo4jPassword.*' $nodeconfig && sed -i "s/neo4jPassword.*/neo4jPasswor
 #
 counter=0
 while ! cqlsh -e 'describe cluster' ; do
-    sleep 5
+    sleep 15
     echo "Waiting until cassandra starts running"
     if [[ $counter -eq 12 ]]; then
     ps -ef | grep cassandra | awk '{print $2}' | xargs -I{} kill {}
+    sleep 30
     cassandra
     counter=0;
     fi
@@ -229,14 +230,16 @@ cqlsh -f /opt/xoken/schema.cql
 #
 echo "Restarting cassandra"
 ps -ef | grep cassandra | awk '{print $2}' | xargs -I{} kill {}
+sleep 30
 cassandra
 sleep 30
 counter=0
 while ! cqlsh -e 'describe cluster' ; do
-    sleep 5
+    sleep 15
     echo "Waiting until cassandra starts running"
     if [[ $counter -eq 12 ]]; then
     ps -ef | grep cassandra | awk '{print $2}' | xargs -I{} kill {}
+    sleep 30
     cassandra
     counter=0;
     fi
