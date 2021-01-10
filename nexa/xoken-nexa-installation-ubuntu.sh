@@ -159,11 +159,11 @@ cat /etc/*release >> osversion.txt
 grep -q "^DISTRIB\_RELEASE\=20\.04" osversion.txt 
 if [ $? -eq 0 ]
 then
-nexa=xoken-nexa_release-1.1.2_ubuntu2004.zip
-wget -c https://www.xoken.org/download/xoken-nexa/6185/xoken-nexa_release-1.1.2_ubuntu2004.zip
+nexa=xoken-nexa_release-1.2.0_ubuntu2004.zip
+wget -c https://www.xoken.org/download/xoken-nexa/6185/xoken-nexa_release-1.2.0_ubuntu2004.zip
 else
-nexa=xoken-nexa_release-1.1.2_ubuntu1804.zip
-wget -c https://www.xoken.org/download/xoken-nexa/6184/xoken-nexa_release-1.1.2_ubuntu1804.zip
+nexa=xoken-nexa_release-1.2.0_ubuntu1804.zip
+wget -c https://www.xoken.org/download/xoken-nexa/6184/xoken-nexa_release-1.2.0_ubuntu1804.zip
 fi
 #################################################
 #
