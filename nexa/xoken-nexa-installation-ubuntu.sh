@@ -193,6 +193,8 @@ echo "Applying constraints (in Neo4j)"
 curl -X POST -H 'Content-type: application/json' http://neo4j:$neo4jpassword@localhost:7474/db/data/transaction/commit -d '{"statements": [{"statement": "CREATE CONSTRAINT ON (n:mnode) ASSERT n.v IS UNIQUE;"}]}'
 curl -X POST -H 'Content-type: application/json' http://neo4j:$neo4jpassword@localhost:7474/db/data/transaction/commit -d '{"statements": [{"statement": "CREATE CONSTRAINT ON ( namestate:namestate ) ASSERT namestate.name IS UNIQUE;"}]}'
 curl -X POST -H 'Content-type: application/json' http://neo4j:$neo4jpassword@localhost:7474/db/data/transaction/commit -d '{"statements": [{"statement": "CREATE CONSTRAINT ON ( nutxo:nutxo ) ASSERT nutxo.outpoint IS UNIQUE;"}]}'
+curl -X POST -H 'Content-type: application/json' http://neo4j:$neo4jpassword@localhost:7474/db/data/transaction/commit -d '{"statements": [{"statement": "CREATE CONSTRAINT ON (block: block) ASSERT block.hash IS UNIQUE;"}]}'
+curl -X POST -H 'Content-type: application/json' http://neo4j:$neo4jpassword@localhost:7474/db/data/transaction/commit -d '{"statements": [{"statement": "CREATE CONSTRAINT ON (protocol: protocol) ASSERT (protocol.name) IS UNIQUE;"}]}'
 #################################################
 #
 #
