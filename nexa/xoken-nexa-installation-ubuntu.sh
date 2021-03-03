@@ -151,6 +151,31 @@ sudo ln  -s /usr/lib/x86_64-linux-gnu/libleveldb.so.1.22.0 /usr/lib/libleveldb.s
 ##################################################
 #
 #
+# Setting up dependencies for and installing cpp-driver for cassandra
+#
+#
+echo "Installing required package openssl"
+sudo apt-get install openssl -y
+echo "Installing required package libkrb5-dev"
+sudo apt-get install libkrb5-dev -y
+echo "Installing required package zlib1g"
+sudo apt-get install zlib1g -y
+echo "Fetching and installing required package multiarch-support"
+wget http://archive.ubuntu.com/ubuntu/pool/main/g/glibc/multiarch-support_2.27-3ubuntu1.4_amd64.deb
+sudo apt-get install ./multiarch-support_2.27-3ubuntu1.4_amd64.deb -y
+echo "Fetching and installing required package libuv1"
+wget https://downloads.datastax.com/cpp-driver/ubuntu/18.04/dependencies/libuv/v1.35.0/libuv1_1.35.0-1_amd64.deb
+sudo apt-get install ./libuv1_1.35.0-1_amd64.deb -y
+echo "Fetching and installing cassandra-cpp-driver"
+wget https://downloads.datastax.com/cpp-driver/ubuntu/18.04/cassandra/v2.15.3/cassandra-cpp-driver_2.15.3-1_amd64.deb
+sudo apt-get install ./cassandra-cpp-driver_2.15.3-1_amd64.deb -y
+echo "Fetching and installing cassandra-cpp-driver-dev"
+wget https://downloads.datastax.com/cpp-driver/ubuntu/18.04/cassandra/v2.15.3/cassandra-cpp-driver-dev_2.15.3-1_amd64.deb
+sudo apt-get install ./cassandra-cpp-driver-dev_2.15.3-1_amd64.deb -y
+
+##################################################
+#
+#
 # Checking Ubuntu OS version and downloading appropriate Xoken Nexa release
 #
 #
